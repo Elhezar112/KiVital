@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { CONDITIONS } from '@/lib/breeds'
+import WeightChart from '@/components/WeightChart'
 
 export default async function PetDetailPage({
   params,
@@ -24,10 +25,25 @@ export default async function PetDetailPage({
   const sevenDaysAgo = new Date()
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
 
-  const logs = await prisma.healthLog.findMany({
-    where: { petId: id, date: { gte: sevenDaysAgo } },
-    orderBy: { date: 'desc' },
-  })
+  const ninetyDaysAgo = new Date()
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 89)
+
+  const [logs, weightLogs] = await Promise.all([
+    prisma.healthLog.findMany({
+      where: { petId: id, date: { gte: sevenDaysAgo } },
+      orderBy: { date: 'desc' },
+    }),
+    prisma.healthLog.findMany({
+      where: { petId: id, date: { gte: ninetyDaysAgo }, weightKg: { not: null } },
+      orderBy: { date: 'asc' },
+      select: { date: true, weightKg: true },
+    }),
+  ])
+
+  const weightChartData = weightLogs.map(l => ({
+    date: new Date(l.date).toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' }),
+    weight: l.weightKg!,
+  }))
 
   const ageYears = pet.birthday
     ? Math.floor((Date.now() - pet.birthday.getTime()) / (1000 * 60 * 60 * 24 * 365))
@@ -99,6 +115,9 @@ export default async function PetDetailPage({
           )}
         </div>
       )}
+
+      {/* Weight chart */}
+      <WeightChart data={weightChartData} baselineWeight={pet.weightKg} />
 
       {/* Quick actions */}
       <div className="flex gap-3">
