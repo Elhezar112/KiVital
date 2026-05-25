@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Species {
+  CAT
+  DOG
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pets              Pet[]
+  healthLogs        HealthLog[]
+  reports           HealthReport[]
+  instantAssessments InstantAssessment[]
+
+  @@map("users")
+}
+
+model Pet {
+  id        String    @id @default(uuid())
+  userId    String
+  name      String
+  species   Species
+  breed     String?
+  birthday  DateTime?
+  weightKg  Float?
+  gender    Gender?
+  neutered      Boolean   @default(false)
+  photoUrl      String?
+  coatPattern   String?
+  parentBreeds  String[]
+  conditions    String[]
+  medicalNotes  String?
+  createdAt    DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  healthLogs         HealthLog[]
+  reports            HealthReport[]
+  instantAssessments InstantAssessment[]
+
+  @@map("pets")
+}
+
+model HealthLog {
+  id           String   @id @default(uuid())
+  petId        String
+  userId       String
+  date         DateTime @db.Date
+  foodGrams    Float?
+  waterMl      Float?
+  litterVisits Int?
+  walkMinutes  Int?
+  weightKg     Float?
+  notes        String?
+  createdAt    DateTime @default(now())
+
+  pet  Pet  @relation(fields: [petId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([petId, date])
+  @@map("health_logs")
+}
+
+model HealthReport {
+  id              String   @id @default(uuid())
+  petId           String
+  userId          String
+  weekStart       DateTime @db.Date
+  summary         String
+  recommendations String
+  alerts          String?
+  rawData         Json?
+  createdAt       DateTime @default(now())
+
+  pet  Pet  @relation(fields: [petId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([petId, weekStart])
+  @@map("health_reports")
+}
+
+model InstantAssessment {
+  id            String   @id @default(uuid())
+  petId         String
+  userId        String
+  logDate       DateTime @db.Date
+  overallStatus String
+  summary       String
+  metricsJson   Json
+  advice        String
+  createdAt     DateTime @default(now())
+
+  pet  Pet  @relation(fields: [petId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("instant_assessments")
+}

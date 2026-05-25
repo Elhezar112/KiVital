@@ -1,0 +1,70 @@
+{
+  "common": {
+    "appName": "KiVital",
+    "tagline": "Smart Health for Your Pets",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "success": "Success"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "pets": "My Pets",
+    "logHealth": "Log Health",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  "pet": {
+    "addPet": "Add a Pet",
+    "name": "Pet Name",
+    "species": "Species",
+    "cat": "Cat",
+    "dog": "Dog",
+    "breed": "Breed",
+    "birthday": "Birthday",
+    "weight": "Weight (kg)",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
+    "neutered": "Neutered / Spayed",
+    "noPets": "No pets yet. Add your first pet!"
+  },
+  "healthLog": {
+    "title": "Daily Health Log",
+    "date": "Date",
+    "foodIntake": "Food Intake",
+    "foodIntakeUnit": "grams",
+    "waterIntake": "Water Intake",
+    "waterIntakeUnit": "ml",
+    "litterVisits": "Litter Box Visits",
+    "walkMinutes": "Walk Duration",
+    "walkMinutesUnit": "minutes",
+    "weight": "Weight",
+    "weightUnit": "kg",
+    "notes": "Notes / Observations",
+    "notesPlaceholder": "Any unusual behavior, symptoms, or observations...",
+    "logSaved": "Health log saved!"
+  },
+  "report": {
+    "title": "Health Report",
+    "weekly": "Weekly Report",
+    "generating": "Generating AI health analysis...",
+    "summary": "Summary",
+    "recommendations": "Recommendations",
+    "alerts": "Health Alerts",
+    "noData": "Not enough data yet. Log at least 3 days of health data to generate a report."
+  }
+}

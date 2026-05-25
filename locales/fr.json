@@ -1,0 +1,70 @@
+{
+  "common": {
+    "appName": "KiVital",
+    "tagline": "Santé intelligente pour vos animaux",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "success": "Succès"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "pets": "Mes animaux",
+    "logHealth": "Suivi santé",
+    "reports": "Rapports",
+    "settings": "Paramètres"
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "signOut": "Se déconnecter",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Pas encore de compte ?",
+    "hasAccount": "Déjà un compte ?"
+  },
+  "pet": {
+    "addPet": "Ajouter un animal",
+    "name": "Nom de l'animal",
+    "species": "Espèce",
+    "cat": "Chat",
+    "dog": "Chien",
+    "breed": "Race",
+    "birthday": "Date de naissance",
+    "weight": "Poids (kg)",
+    "gender": "Sexe",
+    "male": "Mâle",
+    "female": "Femelle",
+    "neutered": "Castré / Stérilisé",
+    "noPets": "Aucun animal. Ajoutez votre premier compagnon !"
+  },
+  "healthLog": {
+    "title": "Journal de santé quotidien",
+    "date": "Date",
+    "foodIntake": "Quantité de nourriture",
+    "foodIntakeUnit": "grammes",
+    "waterIntake": "Consommation d'eau",
+    "waterIntakeUnit": "ml",
+    "litterVisits": "Visites litière",
+    "walkMinutes": "Durée de promenade",
+    "walkMinutesUnit": "minutes",
+    "weight": "Poids",
+    "weightUnit": "kg",
+    "notes": "Notes / Observations",
+    "notesPlaceholder": "Comportements inhabituels, symptômes ou observations...",
+    "logSaved": "Journal enregistré !"
+  },
+  "report": {
+    "title": "Rapport de santé",
+    "weekly": "Rapport hebdomadaire",
+    "generating": "Génération de l'analyse IA en cours...",
+    "summary": "Résumé",
+    "recommendations": "Recommandations",
+    "alerts": "Alertes santé",
+    "noData": "Données insuffisantes. Enregistrez au moins 3 jours pour générer un rapport."
+  }
+}

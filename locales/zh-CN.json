@@ -1,0 +1,70 @@
+{
+  "common": {
+    "appName": "KiVital",
+    "tagline": "为你的宠物提供智能健康管理",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "loading": "加载中...",
+    "error": "出了点问题",
+    "success": "操作成功"
+  },
+  "nav": {
+    "dashboard": "主页",
+    "pets": "我的宠物",
+    "logHealth": "记录健康",
+    "reports": "健康报告",
+    "settings": "设置"
+  },
+  "auth": {
+    "signIn": "登录",
+    "signUp": "注册",
+    "signOut": "退出",
+    "email": "邮箱",
+    "password": "密码",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "还没有账号？",
+    "hasAccount": "已有账号？"
+  },
+  "pet": {
+    "addPet": "添加宠物",
+    "name": "宠物名字",
+    "species": "种类",
+    "cat": "猫",
+    "dog": "狗",
+    "breed": "品种",
+    "birthday": "生日",
+    "weight": "体重（kg）",
+    "gender": "性别",
+    "male": "男",
+    "female": "女",
+    "neutered": "已绝育",
+    "noPets": "还没有宠物，添加你的第一只宠物吧！"
+  },
+  "healthLog": {
+    "title": "每日健康记录",
+    "date": "日期",
+    "foodIntake": "进食量",
+    "foodIntakeUnit": "克",
+    "waterIntake": "饮水量",
+    "waterIntakeUnit": "毫升",
+    "litterVisits": "如厕次数",
+    "walkMinutes": "遛弯时长",
+    "walkMinutesUnit": "分钟",
+    "weight": "体重",
+    "weightUnit": "kg",
+    "notes": "备注 / 异常观察",
+    "notesPlaceholder": "记录任何异常行为、症状或观察...",
+    "logSaved": "健康记录已保存！"
+  },
+  "report": {
+    "title": "健康报告",
+    "weekly": "周报",
+    "generating": "正在生成 AI 健康分析...",
+    "summary": "总结",
+    "recommendations": "建议",
+    "alerts": "健康预警",
+    "noData": "数据不足，请至少记录 3 天的健康数据后再生成报告。"
+  }
+}
