@@ -133,6 +133,12 @@ export default async function PetDetailPage({
         >
           ✨ {t('report.weekly')}
         </Link>
+        <Link
+          href={`/pets/${id}/records`}
+          className="flex-1 text-center bg-white border border-gray-200 hover:border-blue-300 text-gray-700 font-medium py-2.5 rounded-xl text-sm transition"
+        >
+          🏥 医疗档案
+        </Link>
       </div>
 
       {/* Recent health logs */}
