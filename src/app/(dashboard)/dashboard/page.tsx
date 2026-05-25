@@ -53,15 +53,49 @@ export default async function DashboardPage() {
       </div>
 
       {pets.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center">
-          <div className="text-5xl mb-4">🐾</div>
-          <p className="text-gray-500 text-sm mb-4">{t('pet.noPets')}</p>
-          <Link
-            href="/pets/new"
-            className="inline-block bg-emerald-600 text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-emerald-700 transition"
-          >
-            {t('pet.addPet')}
-          </Link>
+        <div className="space-y-4">
+          {/* 欢迎引导卡 */}
+          <div className="bg-emerald-600 rounded-2xl p-8 text-white">
+            <p className="text-2xl font-bold mb-1">欢迎来到 KiVital 🐾</p>
+            <p className="text-emerald-100 text-sm mb-6">
+              开始追踪你的宠物健康，只需三步
+            </p>
+            <div className="space-y-3 mb-8">
+              {[
+                { step: '1', text: '添加你的宠物档案' },
+                { step: '2', text: '每天记录饮食、饮水、体重等数据' },
+                { step: '3', text: 'AI 自动分析健康状况，生成每周报告' },
+              ].map(s => (
+                <div key={s.step} className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-white text-emerald-700 text-xs font-bold flex items-center justify-center shrink-0">
+                    {s.step}
+                  </span>
+                  <p className="text-sm text-emerald-50">{s.text}</p>
+                </div>
+              ))}
+            </div>
+            <Link
+              href="/pets/new"
+              className="inline-block bg-white text-emerald-700 font-semibold text-sm px-6 py-2.5 rounded-xl hover:bg-emerald-50 transition"
+            >
+              + 添加第一只宠物
+            </Link>
+          </div>
+
+          {/* 功能预览 */}
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { icon: '🤖', title: 'AI 健康评估', desc: '每次记录后即时分析' },
+              { icon: '📊', title: '体重趋势图', desc: '90 天数据可视化' },
+              { icon: '📧', title: '每日提醒', desc: '不漏掉任何一次记录' },
+            ].map(f => (
+              <div key={f.title} className="bg-white rounded-2xl border border-gray-200 p-4 text-center">
+                <p className="text-2xl mb-2">{f.icon}</p>
+                <p className="text-xs font-semibold text-gray-700">{f.title}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{f.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
         <>
