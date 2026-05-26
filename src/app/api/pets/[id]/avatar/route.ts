@@ -23,21 +23,26 @@ export async function POST(
   const path = `${user.id}/${id}.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  const admin = createAdminClient()
-  const { error: uploadError } = await admin.storage
-    .from('pet-avatars')
-    .upload(path, buffer, { upsert: true, contentType: file.type })
+  try {
+    const admin = createAdminClient()
+    const { error: uploadError } = await admin.storage
+      .from('pet-avatars')
+      .upload(path, buffer, { upsert: true, contentType: file.type })
 
-  if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 })
+    if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 })
 
-  const { data: { publicUrl } } = admin.storage
-    .from('pet-avatars')
-    .getPublicUrl(path)
+    const { data: { publicUrl } } = admin.storage
+      .from('pet-avatars')
+      .getPublicUrl(path)
 
-  await prisma.pet.update({
-    where: { id },
-    data: { photoUrl: publicUrl },
-  })
+    await prisma.pet.update({
+      where: { id },
+      data: { photoUrl: publicUrl },
+    })
 
-  return NextResponse.json({ photoUrl: publicUrl })
+    return NextResponse.json({ photoUrl: publicUrl })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Server error'
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
 }

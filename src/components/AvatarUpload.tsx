@@ -43,12 +43,14 @@ export default function AvatarUpload({ petId, photoUrl, species }: Props) {
         body: formData,
       })
 
+      const text = await res.text()
       if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error ?? '上传失败')
+        let msg = '上传失败'
+        try { msg = JSON.parse(text).error ?? msg } catch {}
+        throw new Error(msg)
       }
 
-      const { photoUrl: newUrl } = await res.json()
+      const { photoUrl: newUrl } = JSON.parse(text)
       setPreview(`${newUrl}?t=${Date.now()}`)
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : '上传失败，请重试'
