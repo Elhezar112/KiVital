@@ -228,6 +228,7 @@ export const DOG_COAT_COLORS = [
 
 export type SpeciesKey = 'CAT' | 'DOG' | 'RABBIT' | 'HAMSTER' | 'CHINCHILLA' | 'GUINEA_PIG' | 'FERRET' | 'PARROT' | 'BIRD' | 'SNAKE' | 'LIZARD' | 'TURTLE' | 'HEDGEHOG' | 'SUGAR_GLIDER' | 'SPIDER' | 'SCORPION' | 'CRAB'
 
+// v2: specialPeriods + hibernationMonths added to all species
 export type SpecialPeriodKey = 'PRE_SHEDDING' | 'SHEDDING' | 'HIBERNATION' | 'MOLTING' | 'BREEDING'
 
 export const SPECIAL_PERIOD_LABELS: Record<SpecialPeriodKey, string> = {
