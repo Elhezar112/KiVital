@@ -179,24 +179,24 @@ export default async function DashboardPage() {
                   )}
 
                   {/* 快捷操作 */}
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     <Link
                       href={`/log?petId=${pet.id}`}
-                      className="flex-1 text-center text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 rounded-lg transition"
+                      className="text-center text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 rounded-lg transition whitespace-nowrap overflow-hidden text-ellipsis px-1"
                     >
                       + {t('nav.logHealth')}
                     </Link>
                     <Link
                       href={`/reports?petId=${pet.id}`}
-                      className="flex-1 text-center text-xs bg-white border border-gray-200 hover:border-emerald-300 text-gray-700 font-medium py-2 rounded-lg transition"
+                      className="text-center text-xs bg-white border border-gray-200 hover:border-emerald-300 text-gray-700 font-medium py-2 rounded-lg transition whitespace-nowrap overflow-hidden text-ellipsis px-1"
                     >
                       ✨ {t('report.weekly')}
                     </Link>
                     <Link
                       href={`/pets/${pet.id}`}
-                      className="text-xs border border-gray-200 hover:border-gray-300 text-gray-500 px-3 py-2 rounded-lg transition"
+                      className="text-center text-xs border border-gray-200 hover:border-gray-300 text-gray-500 font-medium py-2 rounded-lg transition"
                     >
-                      详情
+                      详情 →
                     </Link>
                   </div>
                 </div>

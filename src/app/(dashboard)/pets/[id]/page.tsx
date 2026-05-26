@@ -128,22 +128,22 @@ export default async function PetDetailPage({
       <WeightChart data={weightChartData} baselineWeight={pet.weightKg} />
 
       {/* Quick actions */}
-      <div className="flex gap-3">
+      <div className="grid grid-cols-3 gap-2">
         <Link
           href={`/log?petId=${id}`}
-          className="flex-1 text-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm transition"
+          className="text-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm transition whitespace-nowrap overflow-hidden text-ellipsis px-2"
         >
           + {t('nav.logHealth')}
         </Link>
         <Link
           href={`/reports?petId=${id}`}
-          className="flex-1 text-center bg-white border border-gray-200 hover:border-emerald-300 text-gray-700 font-medium py-2.5 rounded-xl text-sm transition"
+          className="text-center bg-white border border-gray-200 hover:border-emerald-300 text-gray-700 font-medium py-2.5 rounded-xl text-sm transition whitespace-nowrap overflow-hidden text-ellipsis px-2"
         >
           ✨ {t('report.weekly')}
         </Link>
         <Link
           href={`/pets/${id}/records`}
-          className="flex-1 text-center bg-white border border-gray-200 hover:border-blue-300 text-gray-700 font-medium py-2.5 rounded-xl text-sm transition"
+          className="text-center bg-white border border-gray-200 hover:border-blue-300 text-gray-700 font-medium py-2.5 rounded-xl text-sm transition whitespace-nowrap overflow-hidden text-ellipsis px-2"
         >
           🏥 医疗档案
         </Link>
