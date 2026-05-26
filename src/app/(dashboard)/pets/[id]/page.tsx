@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { CONDITIONS } from '@/lib/breeds'
 import WeightChart from '@/components/WeightChart'
+import { speciesIcon } from '@/lib/speciesIcon'
 
 export default async function PetDetailPage({
   params,
