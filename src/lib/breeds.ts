@@ -238,6 +238,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
   showShedding: boolean
   showFeedingItem: boolean
   feedingItems: string[]
+  waterMode: 'measure' | 'bowl' | 'none'
   breeds: string[]
   coatOptions: string[]
 }> = {
@@ -246,6 +247,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showLitter: true, litterLabel: '如厕次数',
     showWalk: false, walkLabel: '',
     showShedding: false, showFeedingItem: false, feedingItems: [],
+    waterMode: 'measure',
     breeds: [], coatOptions: [],
   },
   DOG: {
@@ -253,6 +255,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showLitter: false, litterLabel: '',
     showWalk: true, walkLabel: '散步时长（分钟）',
     showShedding: false, showFeedingItem: false, feedingItems: [],
+    waterMode: 'measure',
     breeds: [], coatOptions: [],
   },
   RABBIT: {
@@ -260,6 +263,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showLitter: true, litterLabel: '排便次数',
     showWalk: true, walkLabel: '活动时长（分钟）',
     showShedding: false, showFeedingItem: false, feedingItems: [],
+    waterMode: 'measure',
     breeds: [
       '垂耳兔 / Holland Lop', '迷你垂耳兔 / Mini Lop', '英国垂耳兔 / English Lop',
       '荷兰兔 / Dutch', '侏儒兔 / Netherland Dwarf', '狮子兔 / Lionhead',
@@ -273,6 +277,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showLitter: true, litterLabel: '排便次数',
     showWalk: false, walkLabel: '',
     showShedding: false, showFeedingItem: false, feedingItems: [],
+    waterMode: 'measure',
     breeds: [
       '黄金仓鼠 / Syrian Hamster', '加卡利亚仓鼠 / Djungarian / Winter White',
       '坎培尔仓鼠 / Campbell\'s Dwarf', '罗伯罗夫斯基仓鼠 / Roborovski',
@@ -285,6 +290,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showLitter: true, litterLabel: '排便次数',
     showWalk: true, walkLabel: '放风时长（分钟）',
     showShedding: false, showFeedingItem: false, feedingItems: [],
+    waterMode: 'measure',
     breeds: ['标准灰 / Standard Gray', '白色 / White', '米色 / Beige', '黑色天鹅绒 / Black Velvet', '紫罗兰 / Violet', '蓝宝石 / Sapphire'],
     coatOptions: ['标准灰', '白色', '米色', '黑色天鹅绒', '紫罗兰', '蓝宝石'],
   },
@@ -293,6 +299,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showLitter: true, litterLabel: '排便次数',
     showWalk: true, walkLabel: '活动时长（分钟）',
     showShedding: false, showFeedingItem: false, feedingItems: [],
+    waterMode: 'measure',
     breeds: [
       '英国短毛豚鼠 / American', '秘鲁长毛豚鼠 / Peruvian', '阿比西尼亚豚鼠 / Abyssinian',
       '泰迪豚鼠 / Teddy', '无毛豚鼠 / Skinny', '冠毛豚鼠 / Crested',
@@ -304,6 +311,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showLitter: true, litterLabel: '如厕次数',
     showWalk: true, walkLabel: '活动时长（分钟）',
     showShedding: false, showFeedingItem: false, feedingItems: [],
+    waterMode: 'measure',
     breeds: ['宠物雪貂 / Domestic Ferret', '安哥拉雪貂 / Angora Ferret'],
     coatOptions: ['白化（白色）', '深褐色', '银色', '黑色', '肉桂色', '巧克力色', '花斑'],
   },
@@ -312,6 +320,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showLitter: false, litterLabel: '',
     showWalk: false, walkLabel: '',
     showShedding: false, showFeedingItem: false, feedingItems: [],
+    waterMode: 'bowl',
     breeds: [
       '虎皮鹦鹉 / Budgerigar', '玄凤鹦鹉 / Cockatiel', '牡丹鹦鹉 / Lovebird',
       '和尚鹦鹉 / Monk Parakeet', '太平洋鹦鹉 / Pacific Parrotlet',
@@ -325,6 +334,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showLitter: false, litterLabel: '',
     showWalk: false, walkLabel: '',
     showShedding: false, showFeedingItem: false, feedingItems: [],
+    waterMode: 'bowl',
     breeds: [
       '金丝雀 / Canary', '斑胸草雀 / Zebra Finch', '文鸟 / Java Sparrow',
       '十姐妹 / Society Finch', '芙蓉鸟 / Red Factor Canary', '其他 / Other',
@@ -337,6 +347,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showWalk: true, walkLabel: '盘出时长（分钟）',
     showShedding: true, showFeedingItem: true,
     feedingItems: ['乳鼠', '小鼠', '中鼠', '大鼠', '超大鼠', '小兔子', '冷冻食材', '活体食材'],
+    waterMode: 'bowl',
     breeds: [
       '球蟒 / Ball Python', '玉米蛇 / Corn Snake', '奶蛇 / Milk Snake',
       '加州王蛇 / California Kingsnake', '蓝眼琉璃蟒 / Blue-Eyed Leucistic',
@@ -352,6 +363,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showWalk: true, walkLabel: '活动时长（分钟）',
     showShedding: true, showFeedingItem: true,
     feedingItems: ['蟋蟀', '杜比亚蟑螂', '面包虫', '麦皮虫', '黑水虻幼虫', '蔬菜叶', '水果', 'CGD专用粉', '综合'],
+    waterMode: 'bowl',
     breeds: [
       '鬃狮蜥 / Bearded Dragon', '豹纹守宫 / Leopard Gecko',
       '睫角守宫 / Crested Gecko', '绿鬣蜥 / Green Iguana',
@@ -367,6 +379,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showWalk: true, walkLabel: '活动/泡澡时长（分钟）',
     showShedding: true, showFeedingItem: true,
     feedingItems: ['专用龟粮', '蔬菜（生菜/苦菊）', '水果（适量）', '虾/鱼肉', '综合'],
+    waterMode: 'bowl',
     breeds: [
       '苏卡达陆龟 / Sulcata Tortoise', '赫曼陆龟 / Hermann\'s Tortoise',
       '豹纹陆龟 / Leopard Tortoise', '印度星龟 / Indian Star Tortoise',
@@ -382,6 +395,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showWalk: true, walkLabel: '滚轮/活动时长（分钟）',
     showShedding: false, showFeedingItem: true,
     feedingItems: ['刺猬专用粮', '优质猫粮（低脂）', '蟋蟀/面包虫', '蔬菜水果（少量）', '综合'],
+    waterMode: 'measure',
     breeds: [
       '非洲侏儒刺猬 / African Pygmy Hedgehog',
       '欧洲刺猬 / European Hedgehog',
@@ -395,6 +409,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showWalk: true, walkLabel: '活动时长（分钟）',
     showShedding: false, showFeedingItem: true,
     feedingItems: ['BML食谱', '专用蜜袋鼯粮', '新鲜水果', '蜂蜜水', '蟋蟀/昆虫'],
+    waterMode: 'bowl',
     breeds: [
       '普通蜜袋鼯 / Classic Gray Sugar Glider',
       '白化蜜袋鼯 / Albino Sugar Glider',
@@ -409,6 +424,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showWalk: false, walkLabel: '',
     showShedding: true, showFeedingItem: true,
     feedingItems: ['蟋蟀', '杜比亚蟑螂', '面包虫', '麦皮虫'],
+    waterMode: 'none',
     breeds: [
       '墨西哥红膝蜘蛛 / Mexican Red Knee', '智利玫瑰红蜘蛛 / Chilean Rose Hair',
       '蓝宝石华丽雨林蜘蛛 / Gooty Sapphire', '粉红脚蜘蛛 / Pink Toe Tarantula',
@@ -423,6 +439,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showWalk: false, walkLabel: '',
     showShedding: true, showFeedingItem: true,
     feedingItems: ['蟋蟀', '杜比亚蟑螂', '面包虫', '乳鼠（帝王蝎适用）'],
+    waterMode: 'none',
     breeds: [
       '帝王蝎 / Emperor Scorpion', '亚洲森林蝎 / Asian Forest Scorpion',
       '红爪蝎 / Red Claw Scorpion', '沙漠金蝎 / Desert Hairy Scorpion',
@@ -436,6 +453,7 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
     showWalk: true, walkLabel: '活动时长（分钟）',
     showShedding: true, showFeedingItem: true,
     feedingItems: ['商业寄居蟹粮', '新鲜水果', '蔬菜', '鱼虾（蛋白质）', '椰子'],
+    waterMode: 'bowl',
     breeds: [
       '陆寄居蟹 / Land Hermit Crab', '椰子蟹 / Coconut Crab',
       '招潮蟹 / Fiddler Crab', '地蟹 / Land Crab',

@@ -51,6 +51,7 @@ function LogForm() {
   const [error, setError] = useState('')
   const [shedToday, setShedToday] = useState(false)
   const [shedStatus, setShedStatus] = useState<'完全脱皮' | '不完全脱皮（有残留）'>('完全脱皮')
+  const [waterBowlChanged, setWaterBowlChanged] = useState(false)
 
   useEffect(() => {
     const petIdFromUrl = searchParams.get('petId')
@@ -67,6 +68,7 @@ function LogForm() {
     setSelectedPet(petId)
     setAssessment(null)
     setShedToday(false)
+    setWaterBowlChanged(false)
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -76,11 +78,16 @@ function LogForm() {
     setAssessment(null)
 
     const form = new FormData(e.currentTarget)
+    const speciesCfg = currentPet ? SPECIES_CONFIG[currentPet.species as SpeciesKey] : null
     const logData = {
       petId: selectedPet,
       date: form.get('date'),
       foodGrams: form.get('foodGrams') ? Number(form.get('foodGrams')) : null,
-      waterMl: form.get('waterMl') ? Number(form.get('waterMl')) : null,
+      waterMl: speciesCfg?.waterMode === 'bowl'
+        ? (waterBowlChanged ? 1 : null)
+        : speciesCfg?.waterMode === 'none'
+          ? null
+          : (form.get('waterMl') ? Number(form.get('waterMl')) : null),
       litterVisits: form.get('litterVisits') ? Number(form.get('litterVisits')) : null,
       walkMinutes: form.get('walkMinutes') ? Number(form.get('walkMinutes')) : null,
       weightKg: form.get('weightKg') ? Number(form.get('weightKg')) : null,
@@ -161,29 +168,17 @@ function LogForm() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">
-                {t('foodIntake')} <span className="text-gray-400 font-normal">({t('foodIntakeUnit')})</span>
-              </label>
-              <input name="foodGrams" type="number" min="0" className={INPUT} />
-            </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">
-                {t('waterIntake')} <span className="text-gray-400 font-normal">({t('waterIntakeUnit')})</span>
-              </label>
-              <input name="waterMl" type="number" min="0" className={INPUT} />
-            </div>
-          </div>
-
           {(() => {
             const speciesCfg = currentPet ? SPECIES_CONFIG[currentPet.species as SpeciesKey] : null
             return (
               <div className="space-y-4">
-                {/* 喂食类型（爬行/无脊椎类） */}
+
+                {/* 喂食类型（爬行/特殊物种） */}
                 {speciesCfg?.showFeedingItem && (
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">喂食类型 <span className="text-gray-400 font-normal">（本次投喂）</span></label>
+                    <label className="text-sm font-medium text-gray-700">
+                      喂食类型 <span className="text-gray-400 font-normal">（本次投喂）</span>
+                    </label>
                     <select name="feedingItem" className={INPUT}>
                       <option value="">未投喂 / 跳过</option>
                       {speciesCfg.feedingItems.map(item => (
@@ -193,22 +188,45 @@ function LogForm() {
                   </div>
                 )}
 
+                {/* 食量 + 饮水（根据 waterMode 渲染不同 UI） */}
                 <div className="grid grid-cols-2 gap-4">
-                  {/* 食量（克） — 对爬行类标注为可选参考 */}
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
-                      {t('foodIntake')} <span className="text-gray-400 font-normal">({t('foodIntakeUnit')})</span>
+                      {speciesCfg?.showFeedingItem ? '进食量' : t('foodIntake')}
+                      <span className="text-gray-400 font-normal"> ({t('foodIntakeUnit')})</span>
                     </label>
                     <input name="foodGrams" type="number" min="0" className={INPUT} />
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">
-                      {t('waterIntake')} <span className="text-gray-400 font-normal">({t('waterIntakeUnit')})</span>
-                    </label>
-                    <input name="waterMl" type="number" min="0" className={INPUT} />
-                  </div>
+
+                  {speciesCfg?.waterMode === 'measure' && (
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        {t('waterIntake')} <span className="text-gray-400 font-normal">({t('waterIntakeUnit')})</span>
+                      </label>
+                      <input name="waterMl" type="number" min="0" className={INPUT} />
+                    </div>
+                  )}
+
+                  {speciesCfg?.waterMode === 'bowl' && (
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-gray-700">饮水供给</label>
+                      <button
+                        type="button"
+                        onClick={() => setWaterBowlChanged(v => !v)}
+                        className={`w-full py-2 rounded-lg border text-sm font-medium transition ${
+                          waterBowlChanged
+                            ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                            : 'border-gray-200 text-gray-400'
+                        }`}
+                      >
+                        {waterBowlChanged ? '✓ 今日已换新鲜饮水' : '今日未换水'}
+                      </button>
+                    </div>
+                  )}
+                  {/* waterMode === 'none' 时不渲染饮水区块 */}
                 </div>
 
+                {/* 如厕 / 活动时长 / 体重 */}
                 <div className="grid grid-cols-2 gap-4">
                   {speciesCfg?.showLitter && (
                     <div className="space-y-1">
