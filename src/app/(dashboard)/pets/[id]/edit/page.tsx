@@ -8,6 +8,7 @@ import {
   DOG_BREEDS, DOG_COAT_COLORS,
   CONDITIONS,
 } from '@/lib/breeds'
+import AvatarUpload from '@/components/AvatarUpload'
 
 const INPUT = 'w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500'
 const LABEL = 'text-sm font-medium text-gray-700'
@@ -25,6 +26,7 @@ type PetData = {
   parentBreeds: string[]
   conditions: string[]
   medicalNotes: string | null
+  photoUrl: string | null
 }
 
 export default function EditPetPage({ params }: { params: Promise<{ id: string }> }) {
@@ -148,6 +150,9 @@ export default function EditPetPage({ params }: { params: Promise<{ id: string }
         {error && (
           <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3">{error}</div>
         )}
+
+        {/* Avatar */}
+        <AvatarUpload petId={id} photoUrl={pet.photoUrl} species={species} />
 
         {/* Name */}
         <div className="space-y-1">

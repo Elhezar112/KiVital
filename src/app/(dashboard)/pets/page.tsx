@@ -44,7 +44,15 @@ export default async function PetsPage() {
               href={`/pets/${pet.id}`}
               className="bg-white rounded-2xl border border-gray-200 p-5 flex items-center gap-4 hover:border-emerald-300 transition"
             >
-              <span className="text-4xl">{pet.species === 'CAT' ? '🐱' : '🐶'}</span>
+              {pet.photoUrl ? (
+                <img
+                  src={pet.photoUrl}
+                  alt={pet.name}
+                  className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+                />
+              ) : (
+                <span className="text-4xl">{pet.species === 'CAT' ? '🐱' : '🐶'}</span>
+              )}
               <div className="flex-1">
                 <p className="font-semibold">{pet.name}</p>
                 <p className="text-sm text-gray-500">

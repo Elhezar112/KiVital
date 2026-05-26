@@ -59,7 +59,15 @@ export default async function PetDetailPage({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-4xl">{pet.species === 'CAT' ? '🐱' : '🐶'}</span>
+          {pet.photoUrl ? (
+            <img
+              src={pet.photoUrl}
+              alt={pet.name}
+              className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+            />
+          ) : (
+            <span className="text-4xl">{pet.species === 'CAT' ? '🐱' : '🐶'}</span>
+          )}
           <div>
             <h1 className="text-2xl font-bold">{pet.name}</h1>
             <p className="text-sm text-gray-500">
