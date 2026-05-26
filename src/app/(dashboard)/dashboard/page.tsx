@@ -138,7 +138,11 @@ export default async function DashboardPage() {
                   {/* 宠物信息行 */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-3xl">{pet.species === 'CAT' ? '🐱' : '🐶'}</span>
+                      {pet.photoUrl ? (
+                        <img src={pet.photoUrl} alt={pet.name} className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
+                      ) : (
+                        <span className="text-3xl">{pet.species === 'CAT' ? '🐱' : '🐶'}</span>
+                      )}
                       <div>
                         <div className="flex items-center gap-2">
                           <p className="font-semibold text-gray-900">{pet.name}</p>
