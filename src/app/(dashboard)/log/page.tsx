@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { SPECIES_CONFIG, type SpeciesKey } from '@/lib/breeds'
+import { SPECIES_CONFIG, SPECIAL_PERIOD_LABELS, type SpeciesKey, type SpecialPeriodKey } from '@/lib/breeds'
 import { speciesIcon } from '@/lib/speciesIcon'
 
 type Pet = { id: string; name: string; species: string }
@@ -52,6 +52,7 @@ function LogForm() {
   const [shedToday, setShedToday] = useState(false)
   const [shedStatus, setShedStatus] = useState<'完全脱皮' | '不完全脱皮（有残留）'>('完全脱皮')
   const [waterBowlChanged, setWaterBowlChanged] = useState(false)
+  const [specialPeriod, setSpecialPeriod] = useState<SpecialPeriodKey | ''>('')
 
   useEffect(() => {
     const petIdFromUrl = searchParams.get('petId')
@@ -69,6 +70,7 @@ function LogForm() {
     setAssessment(null)
     setShedToday(false)
     setWaterBowlChanged(false)
+    setSpecialPeriod('')
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -94,6 +96,7 @@ function LogForm() {
       notes: form.get('notes') || null,
       feedingItem: (form.get('feedingItem') as string) || null,
       sheddingNote: shedToday ? shedStatus : null,
+      specialPeriod: specialPeriod || null,
     }
 
     const res = await fetch('/api/health-logs', {
@@ -249,6 +252,34 @@ function LogForm() {
                 </div>
 
                 {/* 脱皮记录（蛇/蜥/龟/蜘蛛/蝎/寄居蟹） */}
+                {/* 特殊时期标记 */}
+                {speciesCfg && speciesCfg.specialPeriods.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-gray-700">
+                      特殊时期标记 <span className="text-gray-400 font-normal">（标记后 AI 评估将自动豁免相关指标）</span>
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSpecialPeriod('')}
+                        className={`px-3 py-1.5 rounded-lg border text-xs transition ${specialPeriod === '' ? 'border-gray-400 bg-gray-100 font-medium text-gray-700' : 'border-gray-200 text-gray-400'}`}
+                      >
+                        正常状态
+                      </button>
+                      {speciesCfg.specialPeriods.map(p => (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => setSpecialPeriod(p === specialPeriod ? '' : p)}
+                          className={`px-3 py-1.5 rounded-lg border text-xs transition ${specialPeriod === p ? 'border-amber-500 bg-amber-50 text-amber-700 font-medium' : 'border-gray-200 text-gray-400'}`}
+                        >
+                          {p === 'PRE_SHEDDING' ? '🔮' : p === 'SHEDDING' ? '🐍' : p === 'HIBERNATION' ? '❄️' : p === 'MOLTING' ? '🪶' : '❤️'} {SPECIAL_PERIOD_LABELS[p]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {speciesCfg?.showShedding && (
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-gray-700">脱皮记录</p>
