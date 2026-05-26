@@ -499,6 +499,113 @@ export const ALL_SPECIES = Object.entries(SPECIES_CONFIG).map(([key, cfg]) => ({
   label: cfg.label,
 }))
 
+// ─── Activity Checkin Config ─────────────────────────────────────────────────
+
+export const ACTIVITY_CONFIG: Record<SpeciesKey, { key: string; icon: string; label: string }[]> = {
+  CAT: [
+    { key: 'play', icon: '🎾', label: '互动玩耍' },
+    { key: 'groom', icon: '🪮', label: '梳毛' },
+    { key: 'sunbathe', icon: '☀️', label: '晒太阳' },
+    { key: 'cuddle', icon: '🤗', label: '抱抱撸猫' },
+  ],
+  DOG: [
+    { key: 'walk', icon: '🦮', label: '遛弯散步' },
+    { key: 'play', icon: '🎾', label: '互动玩耍' },
+    { key: 'groom', icon: '🪮', label: '梳毛洗澡' },
+    { key: 'train', icon: '🏅', label: '训练互动' },
+  ],
+  RABBIT: [
+    { key: 'play', icon: '🎾', label: '自由活动' },
+    { key: 'groom', icon: '🪮', label: '梳毛' },
+    { key: 'veggie', icon: '🥬', label: '喂蔬菜零食' },
+    { key: 'cuddle', icon: '🤗', label: '互动抚摸' },
+  ],
+  HAMSTER: [
+    { key: 'wheel', icon: '🎡', label: '滚轮跑步' },
+    { key: 'explore', icon: '🔍', label: '探索活动' },
+    { key: 'snack', icon: '🌻', label: '喂零食' },
+    { key: 'clean', icon: '🧹', label: '清洁笼舍' },
+  ],
+  CHINCHILLA: [
+    { key: 'dustbath', icon: '🪨', label: '沙浴' },
+    { key: 'play', icon: '🎾', label: '放风玩耍' },
+    { key: 'groom', icon: '🪮', label: '梳毛' },
+    { key: 'cuddle', icon: '🤗', label: '互动抚摸' },
+  ],
+  GUINEA_PIG: [
+    { key: 'play', icon: '🎾', label: '自由活动' },
+    { key: 'veggie', icon: '🥬', label: '喂蔬菜' },
+    { key: 'groom', icon: '🪮', label: '梳毛' },
+    { key: 'cuddle', icon: '🤗', label: '互动抚摸' },
+  ],
+  FERRET: [
+    { key: 'play', icon: '🎾', label: '玩耍探索' },
+    { key: 'tunnel', icon: '🕳️', label: '隧道游戏' },
+    { key: 'groom', icon: '🪮', label: '梳毛洗澡' },
+    { key: 'cuddle', icon: '🤗', label: '互动抚摸' },
+  ],
+  PARROT: [
+    { key: 'talk', icon: '🗣️', label: '语言互动' },
+    { key: 'trick', icon: '🎪', label: '训练技巧' },
+    { key: 'flight', icon: '✈️', label: '放飞活动' },
+    { key: 'foraging', icon: '🌿', label: '觅食游戏' },
+  ],
+  BIRD: [
+    { key: 'sing', icon: '🎵', label: '唱歌互动' },
+    { key: 'flight', icon: '✈️', label: '放飞活动' },
+    { key: 'forage', icon: '🌿', label: '觅食游戏' },
+    { key: 'bath', icon: '🚿', label: '水浴' },
+  ],
+  SNAKE: [
+    { key: 'explore', icon: '🔍', label: '放风探索' },
+    { key: 'soak', icon: '🛁', label: '温水泡浴' },
+    { key: 'handle', icon: '🤝', label: '上手互动' },
+    { key: 'clean', icon: '🧹', label: '清洁笼舍' },
+  ],
+  LIZARD: [
+    { key: 'sunbathe', icon: '☀️', label: '晒灯basking' },
+    { key: 'explore', icon: '🔍', label: '放风探索' },
+    { key: 'handle', icon: '🤝', label: '上手互动' },
+    { key: 'clean', icon: '🧹', label: '清洁笼舍' },
+  ],
+  TURTLE: [
+    { key: 'swim', icon: '🏊', label: '游泳活动' },
+    { key: 'sunbathe', icon: '☀️', label: '晒背晒灯' },
+    { key: 'explore', icon: '🔍', label: '陆地探索' },
+    { key: 'clean', icon: '🧹', label: '换水清洁' },
+  ],
+  HEDGEHOG: [
+    { key: 'wheel', icon: '🎡', label: '滚轮跑步' },
+    { key: 'explore', icon: '🔍', label: '放风探索' },
+    { key: 'bath', icon: '🚿', label: '泡脚洗澡' },
+    { key: 'cuddle', icon: '🤗', label: '上手互动' },
+  ],
+  SUGAR_GLIDER: [
+    { key: 'glide', icon: '🪂', label: '滑翔飞行' },
+    { key: 'bonding', icon: '❤️', label: '亲子bonding' },
+    { key: 'play', icon: '🎾', label: '玩耍互动' },
+    { key: 'snack', icon: '🍑', label: '喂零食' },
+  ],
+  SPIDER: [
+    { key: 'feed', icon: '🦗', label: '喂食' },
+    { key: 'observe', icon: '👁️', label: '观察行为' },
+    { key: 'clean', icon: '🧹', label: '清洁笼舍' },
+    { key: 'photo', icon: '📸', label: '记录拍照' },
+  ],
+  SCORPION: [
+    { key: 'feed', icon: '🦗', label: '喂食' },
+    { key: 'observe', icon: '👁️', label: '观察行为' },
+    { key: 'clean', icon: '🧹', label: '清洁笼舍' },
+    { key: 'photo', icon: '📸', label: '记录拍照' },
+  ],
+  CRAB: [
+    { key: 'swim', icon: '🏊', label: '游泳活动' },
+    { key: 'feed', icon: '🦐', label: '喂食' },
+    { key: 'clean', icon: '🧹', label: '换水清洁' },
+    { key: 'observe', icon: '👁️', label: '观察行为' },
+  ],
+}
+
 // ─── Health Conditions ────────────────────────────────────────────────────────
 
 export const CONDITIONS = [

@@ -75,6 +75,7 @@ model User {
   medicalRecords     MedicalRecord[]
   reproductiveEvents ReproductiveEvent[]
   aiConsults         AiConsult[]
+  activityCheckins   ActivityCheckin[]
 
   @@map("users")
 }
@@ -105,6 +106,7 @@ model Pet {
   medicalRecords     MedicalRecord[]
   reproductiveEvents ReproductiveEvent[]
   aiConsults         AiConsult[]
+  activityCheckins   ActivityCheckin[]
 
   @@map("pets")
 }
@@ -238,4 +240,19 @@ model AiConsult {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("ai_consults")
+}
+
+model ActivityCheckin {
+  id        String   @id @default(uuid())
+  petId     String
+  userId    String
+  date      DateTime @db.Date
+  activity  String
+  createdAt DateTime @default(now())
+
+  pet  Pet  @relation(fields: [petId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([petId, date, activity])
+  @@map("activity_checkins")
 }
