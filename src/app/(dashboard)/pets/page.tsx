@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
+import { speciesIcon } from '@/lib/speciesIcon'
 
 export default async function PetsPage() {
   const t = await getTranslations()
@@ -51,7 +52,7 @@ export default async function PetsPage() {
                   className="w-14 h-14 rounded-full object-cover flex-shrink-0"
                 />
               ) : (
-                <span className="text-4xl">{pet.species === 'CAT' ? '🐱' : '🐶'}</span>
+                <span className="text-4xl">{speciesIcon(pet.species)}</span>
               )}
               <div className="flex-1">
                 <p className="font-semibold">{pet.name}</p>

@@ -66,7 +66,7 @@ export default async function PetDetailPage({
               className="w-16 h-16 rounded-full object-cover flex-shrink-0"
             />
           ) : (
-            <span className="text-4xl">{pet.species === 'CAT' ? '🐱' : '🐶'}</span>
+            <span className="text-4xl">{speciesIcon(pet.species)}</span>
           )}
           <div>
             <h1 className="text-2xl font-bold">{pet.name}</h1>

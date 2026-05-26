@@ -224,6 +224,109 @@ export const DOG_COAT_COLORS = [
   'Other / 其他',
 ]
 
+// ─── Exotic Pet Species Config ────────────────────────────────────────────────
+
+export type SpeciesKey = 'CAT' | 'DOG' | 'RABBIT' | 'HAMSTER' | 'CHINCHILLA' | 'GUINEA_PIG' | 'FERRET' | 'PARROT' | 'BIRD'
+
+export const SPECIES_CONFIG: Record<SpeciesKey, {
+  icon: string
+  label: string
+  showLitter: boolean
+  litterLabel: string
+  showWalk: boolean
+  walkLabel: string
+  breeds: string[]
+  coatOptions: string[]
+}> = {
+  CAT: {
+    icon: '🐱', label: '猫',
+    showLitter: true, litterLabel: '如厕次数',
+    showWalk: false, walkLabel: '',
+    breeds: [], coatOptions: [],
+  },
+  DOG: {
+    icon: '🐶', label: '狗',
+    showLitter: false, litterLabel: '',
+    showWalk: true, walkLabel: '散步时长（分钟）',
+    breeds: [], coatOptions: [],
+  },
+  RABBIT: {
+    icon: '🐰', label: '兔子',
+    showLitter: true, litterLabel: '排便次数',
+    showWalk: true, walkLabel: '活动时长（分钟）',
+    breeds: [
+      '垂耳兔 / Holland Lop', '迷你垂耳兔 / Mini Lop', '英国垂耳兔 / English Lop',
+      '荷兰兔 / Dutch', '侏儒兔 / Netherland Dwarf', '狮子兔 / Lionhead',
+      '安哥拉兔 / Angora', '雷克斯兔 / Rex', '新西兰兔 / New Zealand',
+      '比利时兔 / Flemish Giant', '田园兔 / Mixed',
+    ],
+    coatOptions: ['纯白', '纯黑', '灰色', '棕色', '橙色', '奶牛色（黑白）', '三花', '渐变色'],
+  },
+  HAMSTER: {
+    icon: '🐹', label: '仓鼠',
+    showLitter: true, litterLabel: '排便次数',
+    showWalk: false, walkLabel: '',
+    breeds: [
+      '黄金仓鼠 / Syrian Hamster', '加卡利亚仓鼠 / Djungarian / Winter White',
+      '坎培尔仓鼠 / Campbell\'s Dwarf', '罗伯罗夫斯基仓鼠 / Roborovski',
+      '中国仓鼠 / Chinese Hamster',
+    ],
+    coatOptions: ['黄金色', '白色', '灰色', '棕色', '奶油色', '花色（杂色）'],
+  },
+  CHINCHILLA: {
+    icon: '🐭', label: '龙猫',
+    showLitter: true, litterLabel: '排便次数',
+    showWalk: true, walkLabel: '放风时长（分钟）',
+    breeds: ['标准灰 / Standard Gray', '白色 / White', '米色 / Beige', '黑色天鹅绒 / Black Velvet', '紫罗兰 / Violet', '蓝宝石 / Sapphire'],
+    coatOptions: ['标准灰', '白色', '米色', '黑色天鹅绒', '紫罗兰', '蓝宝石'],
+  },
+  GUINEA_PIG: {
+    icon: '🐾', label: '豚鼠',
+    showLitter: true, litterLabel: '排便次数',
+    showWalk: true, walkLabel: '活动时长（分钟）',
+    breeds: [
+      '英国短毛豚鼠 / American', '秘鲁长毛豚鼠 / Peruvian', '阿比西尼亚豚鼠 / Abyssinian',
+      '泰迪豚鼠 / Teddy', '无毛豚鼠 / Skinny', '冠毛豚鼠 / Crested',
+    ],
+    coatOptions: ['纯白', '纯黑', '棕色', '橙色', '奶油色', '双色', '三花'],
+  },
+  FERRET: {
+    icon: '🦡', label: '雪貂',
+    showLitter: true, litterLabel: '如厕次数',
+    showWalk: true, walkLabel: '活动时长（分钟）',
+    breeds: ['宠物雪貂 / Domestic Ferret', '安哥拉雪貂 / Angora Ferret'],
+    coatOptions: ['白化（白色）', '深褐色', '银色', '黑色', '肉桂色', '巧克力色', '花斑'],
+  },
+  PARROT: {
+    icon: '🦜', label: '鹦鹉',
+    showLitter: false, litterLabel: '',
+    showWalk: false, walkLabel: '',
+    breeds: [
+      '虎皮鹦鹉 / Budgerigar', '玄凤鹦鹉 / Cockatiel', '牡丹鹦鹉 / Lovebird',
+      '和尚鹦鹉 / Monk Parakeet', '太平洋鹦鹉 / Pacific Parrotlet',
+      '非洲灰鹦鹉 / African Grey', '亚马逊鹦鹉 / Amazon Parrot',
+      '葵花凤头鹦鹉 / Cockatoo', '金刚鹦鹉 / Macaw', '折衷鹦鹉 / Eclectus',
+    ],
+    coatOptions: ['绿色', '蓝色', '黄色', '红色', '白色', '灰色', '彩色杂羽'],
+  },
+  BIRD: {
+    icon: '🐦', label: '鸟类',
+    showLitter: false, litterLabel: '',
+    showWalk: false, walkLabel: '',
+    breeds: [
+      '金丝雀 / Canary', '斑胸草雀 / Zebra Finch', '文鸟 / Java Sparrow',
+      '十姐妹 / Society Finch', '芙蓉鸟 / Red Factor Canary', '其他 / Other',
+    ],
+    coatOptions: ['黄色', '红色', '白色', '灰色', '棕色', '花色'],
+  },
+}
+
+export const ALL_SPECIES = Object.entries(SPECIES_CONFIG).map(([key, cfg]) => ({
+  value: key as SpeciesKey,
+  icon: cfg.icon,
+  label: cfg.label,
+}))
+
 // ─── Health Conditions ────────────────────────────────────────────────────────
 
 export const CONDITIONS = [

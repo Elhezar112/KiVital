@@ -3,6 +3,8 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { SPECIES_CONFIG, type SpeciesKey } from '@/lib/breeds'
+import { speciesIcon } from '@/lib/speciesIcon'
 
 type Pet = { id: string; name: string; species: string }
 
@@ -143,7 +145,7 @@ function LogForm() {
               >
                 {pets.map(p => (
                   <option key={p.id} value={p.id}>
-                    {p.species === 'CAT' ? '🐱' : '🐶'} {p.name}
+                    {speciesIcon(p.species)} {p.name}
                   </option>
                 ))}
               </select>
@@ -170,19 +172,23 @@ function LogForm() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {currentPet?.species === 'CAT' ? (
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-700">{t('litterVisits')}</label>
-                <input name="litterVisits" type="number" min="0" className={INPUT} />
-              </div>
-            ) : (
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-700">
-                  {t('walkMinutes')} <span className="text-gray-400 font-normal">({t('walkMinutesUnit')})</span>
-                </label>
-                <input name="walkMinutes" type="number" min="0" className={INPUT} />
-              </div>
-            )}
+            {(() => {
+              const speciesCfg = currentPet ? SPECIES_CONFIG[currentPet.species as SpeciesKey] : null
+              return <>
+                {speciesCfg?.showLitter && (
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">{speciesCfg.litterLabel}</label>
+                    <input name="litterVisits" type="number" min="0" className={INPUT} />
+                  </div>
+                )}
+                {speciesCfg?.showWalk && (
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">{speciesCfg.walkLabel}</label>
+                    <input name="walkMinutes" type="number" min="0" className={INPUT} />
+                  </div>
+                )}
+              </>
+            })()}
             <div className="space-y-1">
               <label className="text-sm font-medium text-gray-700">
                 {t('weight')} <span className="text-gray-400 font-normal">({t('weightUnit')})</span>

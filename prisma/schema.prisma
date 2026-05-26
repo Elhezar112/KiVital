@@ -11,6 +11,13 @@ datasource db {
 enum Species {
   CAT
   DOG
+  RABBIT
+  HAMSTER
+  CHINCHILLA
+  GUINEA_PIG
+  FERRET
+  PARROT
+  BIRD
 }
 
 enum Gender {

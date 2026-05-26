@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
+import { speciesIcon } from '@/lib/speciesIcon'
 
 type Pet = { id: string; name: string; species: string }
 

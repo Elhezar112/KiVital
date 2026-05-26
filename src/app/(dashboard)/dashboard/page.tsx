@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
+import { speciesIcon } from '@/lib/speciesIcon'
 
 const STATUS_STYLE = {
   healthy: { bg: 'bg-emerald-50', border: 'border-emerald-200', badge: 'bg-emerald-100 text-emerald-700', icon: '✅' },
@@ -141,7 +142,7 @@ export default async function DashboardPage() {
                       {pet.photoUrl ? (
                         <img src={pet.photoUrl} alt={pet.name} className="w-12 h-12 rounded-full object-cover flex-shrink-0" />
                       ) : (
-                        <span className="text-3xl">{pet.species === 'CAT' ? '🐱' : '🐶'}</span>
+                        <span className="text-3xl">{speciesIcon(pet.species)}</span>
                       )}
                       <div>
                         <div className="flex items-center gap-2">

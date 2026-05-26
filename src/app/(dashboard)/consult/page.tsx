@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { speciesIcon } from '@/lib/speciesIcon'
 
 type Pet = { id: string; name: string; species: string; photoUrl: string | null }
 type ConsultType = 'SYMPTOM' | 'BODY_CONDITION' | 'STOOL' | 'EYE_EAR' | 'WOUND'
@@ -138,7 +139,7 @@ export default function ConsultPage() {
                   {p.photoUrl ? (
                     <img src={p.photoUrl} alt={p.name} className="w-6 h-6 rounded-full object-cover" />
                   ) : (
-                    <span>{p.species === 'CAT' ? '🐱' : '🐶'}</span>
+                    <span>{speciesIcon(p.species)}</span>
                   )}
                   {p.name}
                 </button>
