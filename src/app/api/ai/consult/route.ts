@@ -7,49 +7,63 @@ import { ConsultType, UrgencyLevel } from '@prisma/client'
 
 const anthropic = new Anthropic()
 
+const PREAMBLE = `你是一位温和专业的宠物健康顾问，你的核心原则：
+- 宠物的很多症状都有无害的日常原因（压力、换食、天气、发情等），优先考虑这些可能性
+- 避免制造不必要的恐慌，不轻易建议立即就医
+- 首次出现的轻微症状，几乎都可以先在家观察1-3天
+- 只有在症状严重、持续或多项同时出现时，才建议就医
+- 语气始终温暖、支持，肯定主人主动关注宠物健康的行为
+`
+
+const URGENCY_GUIDE = `
+【紧急程度判断标准】
+- NORMAL：症状轻微，有常见无害原因，建议居家观察，不需要立即就医
+- SOON：症状中等或持续超过3天，建议近期（3-7天内）预约兽医，不紧急
+- EMERGENCY：症状严重（大量出血、呼吸困难、完全无法进食超过24小时、意识异常等），需立即就医
+
+最后一行必须单独输出：URGENCY:NORMAL 或 URGENCY:SOON 或 URGENCY:EMERGENCY`
+
 const PROMPTS: Record<ConsultType, string> = {
-  SYMPTOM: `你是一位经验丰富的宠物医疗助手。请仔细观察照片中宠物的症状，结合主人描述，用中文给出：
-1. 【症状观察】描述你看到的异常情况
-2. 【可能原因】列出2-3个最可能的原因
-3. 【就医建议】判断紧急程度，必须从以下三个级别选一个：
-   - NORMAL：可在家观察，暂不需要就医
-   - SOON：建议3天内预约兽医
-   - EMERGENCY：情况紧急，请立即就医
-4. 【居家护理】如果暂时不就医，可以采取哪些措施
+  SYMPTOM: `${PREAMBLE}
+请仔细观察照片中宠物的症状，结合主人描述，用中文给出：
+1. 【症状观察】客观描述看到的情况，避免夸大
+2. 【常见原因】优先列出2-3个日常生活中的无害原因，再列出需要关注的可能性
+3. 【居家观察】如果在家观察，需要注意哪些变化信号（出现这些再考虑就医）
+4. 【就医建议】基于实际严重程度给出判断，首次轻微症状通常选择 NORMAL
+${URGENCY_GUIDE}`,
 
-最后一行必须单独输出紧急级别，格式为：URGENCY:NORMAL 或 URGENCY:SOON 或 URGENCY:EMERGENCY`,
-
-  BODY_CONDITION: `你是一位专业的宠物营养与体态评估专家。请观察照片中宠物的体型，用中文给出：
-1. 【体况评分】给出1-9分的BCS评分（1=极度消瘦，5=理想，9=严重肥胖）
-2. 【体态描述】描述肋骨可见度、腰线、腹部状况
-3. 【健康评估】当前体态对宠物健康的影响
-4. 【改善建议】饮食和运动方面的具体建议
+  BODY_CONDITION: `${PREAMBLE}
+请观察照片中宠物的体型，用中文给出：
+1. 【体况评分】给出1-9分的BCS评分（5分为理想，4-6分都属于正常健康范围）
+2. 【体态描述】温和地描述肋骨触感、腰线、腹部状况
+3. 【整体评价】先肯定宠物整体状态，再指出需要改善的方向（如有）
+4. 【生活建议】日常饮食和运动的实用小建议，避免让主人感到焦虑
 
 最后一行输出：URGENCY:NORMAL`,
 
-  STOOL: `你是一位宠物消化健康专家。请分析照片中的粪便样本，用中文给出：
-1. 【外观分析】颜色、形态、质地、气味特征（根据视觉判断）
-2. 【健康评估】是否正常，Bristol粪便分类
-3. 【可能原因】如有异常，列出可能原因
-4. 【处理建议】饮食调整或是否需要就医
+  STOOL: `${PREAMBLE}
+请分析照片中的粪便样本，用中文给出：
+1. 【外观描述】客观描述颜色、形态、质地
+2. 【正常与否】大多数软便/轻微颜色变化都有日常原因（换粮、应激、零食等），优先给出这类解释
+3. 【观察建议】告知主人哪些情况（如血便、持续3天以上、完全不成形）才需要就医
+4. 【日常调整】饮食或生活习惯方面的小建议
+${URGENCY_GUIDE}`,
 
-最后一行必须单独输出：URGENCY:NORMAL 或 URGENCY:SOON 或 URGENCY:EMERGENCY`,
+  EYE_EAR: `${PREAMBLE}
+请仔细观察照片中宠物的眼睛或耳朵状况，用中文给出：
+1. 【外观观察】客观描述，少量眼屎/耳垢是完全正常的，注意区分
+2. 【初步判断】优先考虑正常生理现象，再考虑轻微炎症等
+3. 【居家护理】日常清洁方法，哪些情况（红肿加剧、大量分泌物、抓挠不止）需要就医
+4. 【就医建议】基于实际严重程度判断
+${URGENCY_GUIDE}`,
 
-  EYE_EAR: `你是一位宠物眼耳健康专家。请仔细观察照片中宠物的眼睛或耳朵状况，用中文给出：
-1. 【外观观察】描述看到的异常：分泌物、红肿、颜色变化等
-2. 【初步判断】可能是哪类问题（感染/异物/慢性病等）
-3. 【风险评估】是否影响视力或听力
-4. 【处理建议】是否需要就医，以及居家护理方法
-
-最后一行必须单独输出：URGENCY:NORMAL 或 URGENCY:SOON 或 URGENCY:EMERGENCY`,
-
-  WOUND: `你是一位宠物创伤护理专家。请仔细观察照片中宠物的伤口或皮肤病灶，用中文给出：
-1. 【伤口描述】大小、深度（估计）、边缘状态、有无感染迹象
-2. 【严重程度】评估伤口等级（轻微/中等/严重）
-3. 【愈合评估】如果是追踪记录，说明愈合进展
-4. 【护理建议】清洁方式、是否需要包扎、是否需要就医
-
-最后一行必须单独输出：URGENCY:NORMAL 或 URGENCY:SOON 或 URGENCY:EMERGENCY`,
+  WOUND: `${PREAMBLE}
+请仔细观察照片中宠物的伤口或皮肤状况，用中文给出：
+1. 【客观描述】大小、位置、表面状态，尽量客观不夸大
+2. 【严重程度】轻微擦伤/小面积皮炎非常常见，可居家处理；列出需要就医的明确信号
+3. 【居家护理】具体的清洁和护理方法
+4. 【追踪建议】如果是追踪记录，说明愈合进展，给予积极鼓励
+${URGENCY_GUIDE}`,
 }
 
 export async function GET(request: Request) {
@@ -103,6 +117,17 @@ export async function POST(request: Request) {
 
   const { data: { publicUrl } } = admin.storage.from('pet-avatars').getPublicUrl(storagePath)
 
+  // 查询近 14 天同类问诊次数，用于判断是否为复发症状
+  const fourteenDaysAgo = new Date()
+  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14)
+  const recentSameType = await prisma.aiConsult.count({
+    where: { petId, userId: user.id, type, createdAt: { gte: fourteenDaysAgo } },
+  })
+
+  const recurrenceContext = recentSameType > 0
+    ? `\n\n【重要】主人在过去14天内已针对同类问题咨询过 ${recentSameType} 次，说明该症状可能持续或反复出现，请在评估紧急程度时适当提高关注级别，并在建议中提及症状持续时应就医。`
+    : `\n\n【背景】这是主人首次针对此类问题咨询，请优先给出观察和居家护理建议，不必过度担忧。`
+
   const prompt = PROMPTS[type]
   const userContext = userNote ? `\n\n主人描述：${userNote}` : ''
   const petContext = `\n宠物信息：${pet.name}，${pet.species === 'CAT' ? '猫' : '狗'}，品种：${pet.breed ?? '未知'}，${pet.gender === 'FEMALE' ? '雌性' : '雄性'}，${pet.neutered ? '已绝育' : '未绝育'}`
@@ -115,7 +140,7 @@ export async function POST(request: Request) {
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-          { type: 'text', text: prompt + petContext + userContext },
+          { type: 'text', text: prompt + petContext + recurrenceContext + userContext },
         ],
       }],
     })

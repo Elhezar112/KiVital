@@ -5,23 +5,6 @@ import Anthropic from '@anthropic-ai/sdk'
 
 const anthropic = new Anthropic()
 
-const BASELINES = `
-## Healthy Reference Ranges
-
-### Cats
-- Daily water intake: 40–60 ml per kg body weight (e.g. 4 kg cat → 160–240 ml/day). Below 30 ml/kg = concerning.
-- Daily food intake: ~200–280 kcal/day for average adult cat (4–5 kg). Rough guide: 60–70g dry kibble or 200g wet food.
-- Litter box visits: 2–4 times/day normal. <1/day may indicate constipation or blockage. >6/day may indicate UTI, diabetes, or IBD.
-- Resting weight change: >5% loss or gain within a week is a red flag.
-- Senior cats (≥7 years): stricter monitoring — weight loss, increased thirst, litter changes are early disease signals.
-
-### Dogs
-- Daily water intake: 50–100 ml per kg body weight. Below 40 ml/kg = potentially concerning.
-- Daily food intake: varies widely by breed and size. Flag if owner notes "refused to eat" or very large deviations.
-- Exercise: small breeds ≥20 min/day; medium breeds ≥45 min/day; large breeds ≥60 min/day. Less = sedentary risk.
-- Weight change: >3% loss/gain per week is worth noting.
-`
-
 export async function POST(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -33,71 +16,114 @@ export async function POST(request: Request) {
   const pet = await prisma.pet.findFirst({ where: { id: petId, userId: user.id } })
   if (!pet) return NextResponse.json({ error: 'Pet not found' }, { status: 404 })
 
+  // 获取过去 7 天历史记录用于趋势分析
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  const recentLogs = await prisma.healthLog.findMany({
+    where: { petId, date: { gte: sevenDaysAgo } },
+    orderBy: { date: 'asc' },
+  })
+
+  // 计算 7 天各指标均值
+  function avg(key: 'foodGrams' | 'waterMl' | 'litterVisits' | 'walkMinutes' | 'weightKg') {
+    const vals = recentLogs.map(l => l[key]).filter((v): v is number => v != null)
+    return vals.length > 0 ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : null
+  }
+
+  const trend = {
+    days: recentLogs.length,
+    avgFood: avg('foodGrams'),
+    avgWater: avg('waterMl'),
+    avgLitter: avg('litterVisits'),
+    avgWalk: avg('walkMinutes'),
+    avgWeight: avg('weightKg'),
+  }
+
   const ageYears = pet.birthday
     ? Math.floor((Date.now() - pet.birthday.getTime()) / (1000 * 60 * 60 * 24 * 365))
     : null
 
-  const prompt = `You are a veterinary health assistant performing an instant health check.
+  const prompt = `你是一位温和专业的宠物健康助手，帮助主人了解宠物日常健康状况。你的核心原则：
 
-${BASELINES}
+【评估原则】
+1. 宠物和人一样，每天的状态都会有正常波动，单次数据偏低不代表问题
+2. 只有在多个指标同时异常、或同一指标持续多天偏离才需要提高警惕
+3. 优先给出积极、正向的解读；对于轻微偏离，优先提供生活中可能的原因
+4. 避免制造不必要的焦虑，不轻易建议就医
+5. 始终肯定主人认真记录的行为
 
-## Pet Profile
-- Name: ${pet.name}
-- Species: ${pet.species}
-- Breed: ${pet.breed ?? 'Unknown'}
-- Age: ${ageYears != null ? `${ageYears} years` : 'Unknown'}
-- Weight: ${pet.weightKg ?? 'Unknown'} kg
-- Neutered: ${pet.neutered ? 'Yes' : 'No'}
-- Known conditions: ${pet.conditions.length > 0 ? pet.conditions.join(', ') : 'None'}
-- Medical notes: ${pet.medicalNotes ?? 'None'}
+【各指标正常波动范围】
+猫：
+- 进食量：±30% 为正常日常波动（天气、发情、换粮适应期均会影响）
+- 饮水量：±40% 正常（夏季、干粮猫天然偏低）
+- 如厕次数：2-4次/天为正常，±1次不需要担心
+- 体重：单次记录允许 ±5%（称重姿势、饭前饭后均有差异）
 
-## Today's Log
-- Food intake: ${logData.foodGrams != null ? `${logData.foodGrams}g` : 'Not recorded'}
-- Water intake: ${logData.waterMl != null ? `${logData.waterMl}ml` : 'Not recorded'}
-${pet.species === 'CAT' ? `- Litter box visits: ${logData.litterVisits != null ? logData.litterVisits : 'Not recorded'}` : `- Walk duration: ${logData.walkMinutes != null ? `${logData.walkMinutes} min` : 'Not recorded'}`}
-- Weight today: ${logData.weightKg != null ? `${logData.weightKg}kg` : 'Not recorded'}
-- Owner notes: ${logData.notes ?? 'None'}
+狗：
+- 进食量：±30% 正常
+- 饮水量：±40% 正常（运动后、天热自然偏高）
+- 散步时长：受天气、主人时间影响大，单次不作判断
+- 体重：±3% 正常波动
 
-## Task
-Compare today's log against healthy reference ranges and the pet's profile.
-For each recorded metric, assess if it is within a healthy range.
-If any metric is abnormal, list possible underlying health issues to watch for.
+【渐进式预警逻辑】
+- 💚 正常：数据在正常区间内，或轻微偏离但有合理解释
+- 💛 留意：单次中度偏离（超出正常区间 30% 以上），给出观察建议
+- 🟠 关注：结合趋势数据显示持续偏离（需告知主人趋势情况）
+- 🔴 建议咨询兽医：仅当多指标同时严重异常，且趋势数据也显示持续问题
 
-Respond ONLY with valid JSON in this exact format:
+【宠物档案】
+- 名字：${pet.name}，物种：${pet.species === 'CAT' ? '猫' : '狗'}
+- 品种：${pet.breed ?? '未知'}，年龄：${ageYears != null ? `${ageYears}岁` : '未知'}
+- 体重基准：${pet.weightKg ?? '未知'} kg，绝育：${pet.neutered ? '是' : '否'}
+- 已知健康问题：${pet.conditions.length > 0 ? pet.conditions.join('、') : '无'}
+- 备注：${pet.medicalNotes ?? '无'}
+
+【今日记录】
+- 进食量：${logData.foodGrams != null ? `${logData.foodGrams}g` : '未记录'}
+- 饮水量：${logData.waterMl != null ? `${logData.waterMl}ml` : '未记录'}
+${pet.species === 'CAT' ? `- 如厕次数：${logData.litterVisits != null ? logData.litterVisits + '次' : '未记录'}` : `- 散步时长：${logData.walkMinutes != null ? logData.walkMinutes + '分钟' : '未记录'}`}
+- 今日体重：${logData.weightKg != null ? `${logData.weightKg}kg` : '未记录'}
+- 主人备注：${logData.notes ?? '无'}
+
+【近7天趋势（${trend.days}条记录）】
+- 平均进食：${trend.avgFood ?? '无数据'}g
+- 平均饮水：${trend.avgWater ?? '无数据'}ml
+${pet.species === 'CAT' ? `- 平均如厕：${trend.avgLitter ?? '无数据'}次` : `- 平均散步：${trend.avgWalk ?? '无数据'}分钟`}
+- 平均体重：${trend.avgWeight ?? '无数据'}kg
+
+请用中文，以温暖、鼓励的语气进行评估。结合趋势数据判断今日记录是正常波动还是值得关注的趋势。
+仅当有明确、持续的异常时才使用"warning"或"alert"，大多数日常记录应为"healthy"。
+
+请只返回以下 JSON 格式（不要有其他文字）：
 {
   "overallStatus": "healthy" | "warning" | "alert",
-  "summary": "One sentence overall assessment",
+  "summary": "一句话整体评估，语气温和积极",
   "metrics": [
     {
-      "name": "metric name in the user's likely language (English)",
+      "name": "指标名称",
       "status": "normal" | "low" | "high" | "concerning",
-      "value": "what was recorded",
-      "message": "brief explanation",
-      "possibleIssues": ["issue1", "issue2"]
+      "value": "今日记录值",
+      "message": "简短说明（15字以内），优先给出正向解读",
+      "possibleIssues": []
     }
   ],
-  "advice": "One actionable sentence for the owner. If alert, recommend vet visit."
-}
-
-Only include metrics that were actually recorded. Keep messages concise (under 15 words each). possibleIssues should only be filled for non-normal statuses.`
+  "advice": "一句实用建议，避免引发焦虑。只在明确持续异常时建议就医。"
+}`
 
   const message = await anthropic.messages.create({
     model: 'claude-haiku-4-5-20251001',
-    max_tokens: 800,
+    max_tokens: 900,
     messages: [{ role: 'user', content: prompt }],
   })
 
   const content = message.content[0]
-  if (content.type !== 'text') {
-    return NextResponse.json({ error: 'AI error' }, { status: 500 })
-  }
+  if (content.type !== 'text') return NextResponse.json({ error: 'AI error' }, { status: 500 })
 
   try {
     const jsonMatch = content.text.match(/\{[\s\S]*\}/)
     if (!jsonMatch) throw new Error('No JSON found')
     const assessment = JSON.parse(jsonMatch[0])
 
-    // Persist to database
     await prisma.instantAssessment.create({
       data: {
         petId,

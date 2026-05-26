@@ -31,28 +31,35 @@ export async function generateWeeklyReport(petId: string, userId: string) {
     ? Math.floor((Date.now() - pet.birthday.getTime()) / (1000 * 60 * 60 * 24 * 365))
     : null
 
-  const prompt = `You are a veterinary health assistant. Analyze the following weekly health log for a ${pet.species.toLowerCase()} named ${pet.name}.
+  const prompt = `你是一位温暖、专业的宠物健康顾问，正在为主人生成本周的宠物健康周报。
 
-Pet profile:
-- Species: ${pet.species}
-- Breed: ${pet.breed ?? 'Unknown'}
-- Age: ${ageYears != null ? `${ageYears} years` : 'Unknown'}
-- Weight: ${pet.weightKg ?? 'Unknown'} kg
-- Neutered: ${pet.neutered ? 'Yes' : 'No'}
+【你的核心角色】
+你是主人和宠物之间的健康伙伴，而不是医生。你的目标是：
+1. 肯定主人这一周认真记录的行为，让他们感到被支持
+2. 用轻松易懂的语言解读本周数据，强调积极的方面
+3. 对于波动，优先给出生活中的合理解释（天气、换粮、季节等）
+4. 只有在多项指标持续出现异常趋势时，才温和地提示关注
 
-Health log (last 7 days):
+【评估原则】
+- 单次偏低/偏高不是问题，看的是本周的整体趋势
+- 进食量 ±30%、饮水量 ±40% 都属于正常日常波动
+- 体重周内波动 ±5% 正常，需要关注的是持续单向变化
+- alerts 字段：仅在本周有 3 天以上同一指标持续异常时才填写，否则返回 null
+- 语气始终温和、正向，避免让主人产生焦虑或愧疚感
+
+【宠物档案】
+- 名字：${pet.name}，${pet.species === 'CAT' ? '猫' : '狗'}
+- 品种：${pet.breed ?? '未知'}，年龄：${ageYears != null ? `${ageYears}岁` : '未知'}
+- 体重：${pet.weightKg ?? '未知'} kg，绝育：${pet.neutered ? '是' : '否'}
+
+【本周健康记录（${logs.length}天）】
 ${JSON.stringify(summary, null, 2)}
 
-Please provide:
-1. A brief summary of the pet's health this week (2-3 sentences)
-2. 2-3 specific, actionable recommendations
-3. Any health alerts (if any metrics are concerning)
-
-Respond in JSON format:
+请用中文回复，JSON 格式如下：
 {
-  "summary": "...",
-  "recommendations": "...",
-  "alerts": "..." or null
+  "summary": "2-3句话，先肯定主人的记录行为，再用轻松语气总结本周整体状态",
+  "recommendations": "2-3条生活化建议，具体可操作，避免医疗化语言",
+  "alerts": "仅在持续异常时填写，语气温和；否则返回 null"
 }`
 
   const message = await anthropic.messages.create({
