@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { speciesIcon } from './speciesIcon'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -7,14 +8,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://ki-vital.vercel.app
 
 type UnloggedPet = {
   name: string
-  species: 'CAT' | 'DOG'
+  species: string
   daysSince: number
   petId: string
 }
 
 export async function sendLogReminder(toEmail: string, pets: UnloggedPet[]) {
   const petLines = pets.map(p => {
-    const emoji = p.species === 'CAT' ? '🐱' : '🐶'
+    const emoji = speciesIcon(p.species)
     const days = p.daysSince === 1 ? '1 day' : `${p.daysSince} days`
     return `<li style="margin-bottom:8px">${emoji} <strong>${p.name}</strong> — last logged ${days} ago</li>`
   }).join('')

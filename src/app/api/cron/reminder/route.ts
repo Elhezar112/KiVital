@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   })
 
   // 按用户分组，筛选超过 2 天未记录的宠物
-  const userMap = new Map<string, { email: string; pets: { name: string; species: 'CAT' | 'DOG'; daysSince: number; petId: string }[] }>()
+  const userMap = new Map<string, { email: string; pets: { name: string; species: string; daysSince: number; petId: string }[] }>()
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
