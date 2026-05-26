@@ -49,6 +49,8 @@ function LogForm() {
   const [assessing, setAssessing] = useState(false)
   const [assessment, setAssessment] = useState<Assessment | null>(null)
   const [error, setError] = useState('')
+  const [shedToday, setShedToday] = useState(false)
+  const [shedStatus, setShedStatus] = useState<'完全脱皮' | '不完全脱皮（有残留）'>('完全脱皮')
 
   useEffect(() => {
     const petIdFromUrl = searchParams.get('petId')
@@ -64,6 +66,7 @@ function LogForm() {
   function handlePetChange(petId: string) {
     setSelectedPet(petId)
     setAssessment(null)
+    setShedToday(false)
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -82,6 +85,8 @@ function LogForm() {
       walkMinutes: form.get('walkMinutes') ? Number(form.get('walkMinutes')) : null,
       weightKg: form.get('weightKg') ? Number(form.get('weightKg')) : null,
       notes: form.get('notes') || null,
+      feedingItem: (form.get('feedingItem') as string) || null,
+      sheddingNote: shedToday ? shedStatus : null,
     }
 
     const res = await fetch('/api/health-logs', {
@@ -171,31 +176,103 @@ function LogForm() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {(() => {
-              const speciesCfg = currentPet ? SPECIES_CONFIG[currentPet.species as SpeciesKey] : null
-              return <>
-                {speciesCfg?.showLitter && (
+          {(() => {
+            const speciesCfg = currentPet ? SPECIES_CONFIG[currentPet.species as SpeciesKey] : null
+            return (
+              <div className="space-y-4">
+                {/* 喂食类型（爬行/无脊椎类） */}
+                {speciesCfg?.showFeedingItem && (
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">{speciesCfg.litterLabel}</label>
-                    <input name="litterVisits" type="number" min="0" className={INPUT} />
+                    <label className="text-sm font-medium text-gray-700">喂食类型 <span className="text-gray-400 font-normal">（本次投喂）</span></label>
+                    <select name="feedingItem" className={INPUT}>
+                      <option value="">未投喂 / 跳过</option>
+                      {speciesCfg.feedingItems.map(item => (
+                        <option key={item} value={item}>{item}</option>
+                      ))}
+                    </select>
                   </div>
                 )}
-                {speciesCfg?.showWalk && (
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* 食量（克） — 对爬行类标注为可选参考 */}
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">{speciesCfg.walkLabel}</label>
-                    <input name="walkMinutes" type="number" min="0" className={INPUT} />
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('foodIntake')} <span className="text-gray-400 font-normal">({t('foodIntakeUnit')})</span>
+                    </label>
+                    <input name="foodGrams" type="number" min="0" className={INPUT} />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('waterIntake')} <span className="text-gray-400 font-normal">({t('waterIntakeUnit')})</span>
+                    </label>
+                    <input name="waterMl" type="number" min="0" className={INPUT} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {speciesCfg?.showLitter && (
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-gray-700">{speciesCfg.litterLabel}</label>
+                      <input name="litterVisits" type="number" min="0" className={INPUT} />
+                    </div>
+                  )}
+                  {speciesCfg?.showWalk && (
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium text-gray-700">{speciesCfg.walkLabel}</label>
+                      <input name="walkMinutes" type="number" min="0" className={INPUT} />
+                    </div>
+                  )}
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('weight')} <span className="text-gray-400 font-normal">({t('weightUnit')})</span>
+                    </label>
+                    <input name="weightKg" type="number" step="0.01" min="0" className={INPUT} />
+                  </div>
+                </div>
+
+                {/* 脱皮记录（蛇/蜥/龟/蜘蛛/蝎/寄居蟹） */}
+                {speciesCfg?.showShedding && (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-gray-700">脱皮记录</p>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setShedToday(false)}
+                        className={`flex-1 py-2 rounded-lg border text-sm transition ${!shedToday ? 'border-gray-400 bg-gray-100 font-medium text-gray-800' : 'border-gray-200 text-gray-400'}`}
+                      >
+                        今日无脱皮
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShedToday(true)}
+                        className={`flex-1 py-2 rounded-lg border text-sm transition ${shedToday ? 'border-emerald-500 bg-emerald-50 font-medium text-emerald-700' : 'border-gray-200 text-gray-400'}`}
+                      >
+                        🐍 今日脱皮
+                      </button>
+                    </div>
+                    {shedToday && (
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setShedStatus('完全脱皮')}
+                          className={`flex-1 py-2 rounded-lg border text-sm transition ${shedStatus === '完全脱皮' ? 'border-emerald-500 bg-emerald-50 text-emerald-700 font-medium' : 'border-gray-200 text-gray-500'}`}
+                        >
+                          ✅ 完全脱皮
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShedStatus('不完全脱皮（有残留）')}
+                          className={`flex-1 py-2 rounded-lg border text-sm transition ${shedStatus === '不完全脱皮（有残留）' ? 'border-amber-500 bg-amber-50 text-amber-700 font-medium' : 'border-gray-200 text-gray-500'}`}
+                        >
+                          ⚠️ 不完全脱皮
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
-              </>
-            })()}
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">
-                {t('weight')} <span className="text-gray-400 font-normal">({t('weightUnit')})</span>
-              </label>
-              <input name="weightKg" type="number" step="0.01" min="0" className={INPUT} />
-            </div>
-          </div>
+              </div>
+            )
+          })()}
 
           <div className="space-y-1">
             <label className="text-sm font-medium text-gray-700">{t('notes')}</label>

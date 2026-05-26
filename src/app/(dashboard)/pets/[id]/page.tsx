@@ -185,6 +185,18 @@ export default async function PetDetailPage({
                     <Stat icon="🦮" value={`${log.walkMinutes}min`} label={t('healthLog.walkMinutes')} />
                   )}
                 </div>
+                {(log as { feedingItem?: string | null }).feedingItem && (
+                  <div className="mt-2 flex items-center gap-1 text-xs text-gray-500">
+                    <span>🍖</span>
+                    <span>投喂：{(log as { feedingItem?: string | null }).feedingItem}</span>
+                  </div>
+                )}
+                {(log as { sheddingNote?: string | null }).sheddingNote && (
+                  <div className={`mt-2 flex items-center gap-1 text-xs font-medium ${(log as { sheddingNote?: string | null }).sheddingNote === '完全脱皮' ? 'text-emerald-600' : 'text-amber-600'}`}>
+                    <span>🐍</span>
+                    <span>{(log as { sheddingNote?: string | null }).sheddingNote}</span>
+                  </div>
+                )}
                 {log.notes && (
                   <p className="text-xs text-gray-400 mt-2 italic">{log.notes}</p>
                 )}

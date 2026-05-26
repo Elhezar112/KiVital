@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   await getOrCreateUser(user.id, user.email!)
 
   const body = await request.json()
-  const { petId, date, foodGrams, waterMl, litterVisits, walkMinutes, weightKg, notes } = body
+  const { petId, date, foodGrams, waterMl, litterVisits, walkMinutes, weightKg, notes, feedingItem, sheddingNote } = body
 
   if (!petId || !date) {
     return NextResponse.json({ error: 'Pet and date are required' }, { status: 400 })
@@ -21,10 +21,12 @@ export async function POST(request: Request) {
   const pet = await prisma.pet.findFirst({ where: { id: petId, userId: user.id } })
   if (!pet) return NextResponse.json({ error: 'Pet not found' }, { status: 404 })
 
+  const fields = { foodGrams, waterMl, litterVisits, walkMinutes, weightKg, notes, feedingItem: feedingItem || null, sheddingNote: sheddingNote || null }
+
   const log = await prisma.healthLog.upsert({
     where: { petId_date: { petId, date: new Date(date) } },
-    update: { foodGrams, waterMl, litterVisits, walkMinutes, weightKg, notes },
-    create: { petId, userId: user.id, date: new Date(date), foodGrams, waterMl, litterVisits, walkMinutes, weightKg, notes },
+    update: fields,
+    create: { petId, userId: user.id, date: new Date(date), ...fields },
   })
 
   return NextResponse.json(log, { status: 201 })

@@ -120,6 +120,8 @@ model HealthLog {
   walkMinutes  Int?
   weightKg     Float?
   notes        String?
+  feedingItem  String?
+  sheddingNote String?
   createdAt    DateTime @default(now())
 
   pet  Pet  @relation(fields: [petId], references: [id], onDelete: Cascade)
