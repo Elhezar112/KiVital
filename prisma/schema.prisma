@@ -18,6 +18,14 @@ enum Species {
   FERRET
   PARROT
   BIRD
+  SNAKE
+  LIZARD
+  TURTLE
+  HEDGEHOG
+  SUGAR_GLIDER
+  SPIDER
+  SCORPION
+  CRAB
 }
 
 enum Gender {

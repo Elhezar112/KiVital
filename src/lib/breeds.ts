@@ -226,7 +226,7 @@ export const DOG_COAT_COLORS = [
 
 // ─── Exotic Pet Species Config ────────────────────────────────────────────────
 
-export type SpeciesKey = 'CAT' | 'DOG' | 'RABBIT' | 'HAMSTER' | 'CHINCHILLA' | 'GUINEA_PIG' | 'FERRET' | 'PARROT' | 'BIRD'
+export type SpeciesKey = 'CAT' | 'DOG' | 'RABBIT' | 'HAMSTER' | 'CHINCHILLA' | 'GUINEA_PIG' | 'FERRET' | 'PARROT' | 'BIRD' | 'SNAKE' | 'LIZARD' | 'TURTLE' | 'HEDGEHOG' | 'SUGAR_GLIDER' | 'SPIDER' | 'SCORPION' | 'CRAB'
 
 export const SPECIES_CONFIG: Record<SpeciesKey, {
   icon: string
@@ -318,6 +318,102 @@ export const SPECIES_CONFIG: Record<SpeciesKey, {
       '十姐妹 / Society Finch', '芙蓉鸟 / Red Factor Canary', '其他 / Other',
     ],
     coatOptions: ['黄色', '红色', '白色', '灰色', '棕色', '花色'],
+  },
+  SNAKE: {
+    icon: '🐍', label: '蛇',
+    showLitter: false, litterLabel: '',
+    showWalk: true, walkLabel: '盘出时长（分钟）',
+    breeds: [
+      '球蟒 / Ball Python', '玉米蛇 / Corn Snake', '奶蛇 / Milk Snake',
+      '加州王蛇 / California Kingsnake', '蓝眼琉璃蟒 / Blue-Eyed Leucistic',
+      '网纹蟒 / Reticulated Python', '绿树蟒 / Green Tree Python',
+      '翠青蛇 / Smooth Green Snake', '虎纹游蛇 / Tiger Keelback',
+      '其他 / Other',
+    ],
+    coatOptions: ['野生色', '白化', '白球', '蜘蛛花纹', '香蕉色', '迷彩', '丛林色', '幽灵色', '黄油色', '其他'],
+  },
+  LIZARD: {
+    icon: '🦎', label: '蜥蜴/守宫',
+    showLitter: false, litterLabel: '',
+    showWalk: true, walkLabel: '活动时长（分钟）',
+    breeds: [
+      '鬃狮蜥 / Bearded Dragon', '豹纹守宫 / Leopard Gecko',
+      '睫角守宫 / Crested Gecko', '绿鬣蜥 / Green Iguana',
+      '蓝舌蜥 / Blue-Tongued Skink', '变色龙 / Veiled Chameleon',
+      '中部蓝舌蜥 / Central BTS', '飞蜥 / Flying Lizard',
+      '安乐蜥 / Anole', '其他 / Other',
+    ],
+    coatOptions: ['野生色', '白化', '超雪（Super Snow）', '暴风雪（Blizzard）', '高黄', '杂色', '幻彩', '其他'],
+  },
+  TURTLE: {
+    icon: '🐢', label: '龟类',
+    showLitter: false, litterLabel: '',
+    showWalk: true, walkLabel: '活动/泡澡时长（分钟）',
+    breeds: [
+      '苏卡达陆龟 / Sulcata Tortoise', '赫曼陆龟 / Hermann\'s Tortoise',
+      '豹纹陆龟 / Leopard Tortoise', '印度星龟 / Indian Star Tortoise',
+      '缘翘陆龟 / Marginated Tortoise', '黑靴陆龟 / Black Spurred Tortoise',
+      '巴西龟（红耳龟）/ Red-Eared Slider', '黄喉拟水龟 / Yellow-Throated Pond Turtle',
+      '地图龟 / Map Turtle', '闭壳龟 / Box Turtle', '其他 / Other',
+    ],
+    coatOptions: ['标准色', '白化', '高橙', '黑化', '白化高橙', '其他'],
+  },
+  HEDGEHOG: {
+    icon: '🦔', label: '刺猬',
+    showLitter: true, litterLabel: '排便次数',
+    showWalk: true, walkLabel: '滚轮/活动时长（分钟）',
+    breeds: [
+      '非洲侏儒刺猬 / African Pygmy Hedgehog',
+      '欧洲刺猬 / European Hedgehog',
+      '长耳刺猬 / Long-Eared Hedgehog',
+    ],
+    coatOptions: ['盐和胡椒（标准）', '白化', '纯白', '巧克力色', '奶油色', '苹果馅饼色', '灰色', '棕色'],
+  },
+  SUGAR_GLIDER: {
+    icon: '🐿️', label: '蜜袋鼯',
+    showLitter: false, litterLabel: '',
+    showWalk: true, walkLabel: '活动时长（分钟）',
+    breeds: [
+      '普通蜜袋鼯 / Classic Gray Sugar Glider',
+      '白化蜜袋鼯 / Albino Sugar Glider',
+      '亮化蜜袋鼯 / Leucistic Sugar Glider',
+      '棉花糖蜜袋鼯 / Creamino Sugar Glider',
+    ],
+    coatOptions: ['经典灰', '白化', '亮化（白色）', '棉花糖色（奶黄）', '金色', '黑化', '其他'],
+  },
+  SPIDER: {
+    icon: '🕷️', label: '蜘蛛/狼蛛',
+    showLitter: false, litterLabel: '',
+    showWalk: false, walkLabel: '',
+    breeds: [
+      '墨西哥红膝蜘蛛 / Mexican Red Knee', '智利玫瑰红蜘蛛 / Chilean Rose Hair',
+      '蓝宝石华丽雨林蜘蛛 / Gooty Sapphire', '粉红脚蜘蛛 / Pink Toe Tarantula',
+      '橙色巴布蜘蛛 / Orange Baboon Tarantula', '绿瓶蓝蜘蛛 / Green Bottle Blue',
+      '红火玫瑰蜘蛛 / Chilean Flame Tarantula', '其他 / Other',
+    ],
+    coatOptions: ['棕色系', '黑色系', '蓝色系', '橙色系', '彩色杂纹', '其他'],
+  },
+  SCORPION: {
+    icon: '🦂', label: '蝎子',
+    showLitter: false, litterLabel: '',
+    showWalk: false, walkLabel: '',
+    breeds: [
+      '帝王蝎 / Emperor Scorpion', '亚洲森林蝎 / Asian Forest Scorpion',
+      '红爪蝎 / Red Claw Scorpion', '沙漠金蝎 / Desert Hairy Scorpion',
+      '扁石蝎 / Flat Rock Scorpion', '其他 / Other',
+    ],
+    coatOptions: ['黑色', '深棕色', '棕色', '黄棕色', '黄色', '其他'],
+  },
+  CRAB: {
+    icon: '🦀', label: '寄居蟹/螃蟹',
+    showLitter: false, litterLabel: '',
+    showWalk: true, walkLabel: '活动时长（分钟）',
+    breeds: [
+      '陆寄居蟹 / Land Hermit Crab', '椰子蟹 / Coconut Crab',
+      '招潮蟹 / Fiddler Crab', '地蟹 / Land Crab',
+      '其他 / Other',
+    ],
+    coatOptions: ['红色系', '蓝色系', '棕色系', '橙色系', '紫色系', '杂色'],
   },
 }
 
