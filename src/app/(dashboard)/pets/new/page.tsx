@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import {
@@ -19,9 +19,13 @@ export default function NewPetPage() {
 
   const [species, setSpecies] = useState<'CAT' | 'DOG'>('CAT')
   const [breed, setBreed] = useState('')
+  const [coatPatternValue, setCoatPatternValue] = useState('')
   const [conditions, setConditions] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [detecting, setDetecting] = useState(false)
+  const [detectNote, setDetectNote] = useState('')
+  const detectInputRef = useRef<HTMLInputElement>(null)
 
   const isMixed = breed === 'Mixed Breed / 混血犬'
   const breedList = species === 'CAT' ? CAT_BREEDS : DOG_BREEDS
@@ -37,6 +41,32 @@ export default function NewPetPage() {
   function handleSpeciesChange(s: 'CAT' | 'DOG') {
     setSpecies(s)
     setBreed('')
+  }
+
+  async function handleBreedDetect(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    if (!f) return
+    setDetecting(true)
+    setDetectNote('')
+    const fd = new FormData()
+    fd.append('file', f)
+    try {
+      const res = await fetch('/api/ai/breed-detect', { method: 'POST', body: fd })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      if (data.species) setSpecies(data.species as 'CAT' | 'DOG')
+      if (data.breed) {
+        const list = data.species === 'CAT' ? CAT_BREEDS : DOG_BREEDS
+        const match = list.find(b => b.toLowerCase().includes(data.breed.toLowerCase().split('/')[0].trim()))
+        setBreed(match ?? data.breed)
+      }
+      if (data.coatPattern) setCoatPatternValue(data.coatPattern)
+      setDetectNote(`✅ 识别结果：${data.breed ?? '未知品种'}${data.notes ? ' · ' + data.notes : ''}（置信度：${data.confidence === 'high' ? '高' : data.confidence === 'medium' ? '中' : '低'}）`)
+    } catch (err: unknown) {
+      setDetectNote('❌ 识别失败，请手动选择品种')
+    } finally {
+      setDetecting(false)
+    }
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -87,6 +117,22 @@ export default function NewPetPage() {
         {error && (
           <div className="bg-red-50 text-red-600 text-sm rounded-lg px-4 py-3">{error}</div>
         )}
+
+        {/* AI 品种识别 */}
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 space-y-2">
+          <p className="text-sm font-medium text-emerald-800">🤖 AI 拍照识别品种（选填）</p>
+          <p className="text-xs text-emerald-600">上传宠物照片，AI 自动识别品种并填入下方字段</p>
+          <button
+            type="button"
+            onClick={() => detectInputRef.current?.click()}
+            disabled={detecting}
+            className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg transition disabled:opacity-50"
+          >
+            {detecting ? '识别中...' : '📷 上传照片识别'}
+          </button>
+          <input ref={detectInputRef} type="file" accept="image/*" capture="environment" onChange={handleBreedDetect} className="hidden" />
+          {detectNote && <p className="text-xs text-gray-600">{detectNote}</p>}
+        </div>
 
         {/* Name */}
         <div className="space-y-1">

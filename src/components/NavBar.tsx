@@ -26,6 +26,7 @@ export default function NavBar({ userEmail }: { userEmail: string }) {
     { href: '/pets', label: t('pets') },
     { href: '/log', label: t('logHealth') },
     { href: '/reports', label: t('reports') },
+    { href: '/consult', label: 'AI 问诊' },
   ]
 
   return (

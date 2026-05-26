@@ -32,6 +32,20 @@ enum ReproductiveEventType {
   NURSING
 }
 
+enum ConsultType {
+  SYMPTOM
+  BODY_CONDITION
+  STOOL
+  EYE_EAR
+  WOUND
+}
+
+enum UrgencyLevel {
+  NORMAL
+  SOON
+  EMERGENCY
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -45,6 +59,7 @@ model User {
   vaccinations       Vaccination[]
   medicalRecords     MedicalRecord[]
   reproductiveEvents ReproductiveEvent[]
+  aiConsults         AiConsult[]
 
   @@map("users")
 }
@@ -74,6 +89,7 @@ model Pet {
   vaccinations       Vaccination[]
   medicalRecords     MedicalRecord[]
   reproductiveEvents ReproductiveEvent[]
+  aiConsults         AiConsult[]
 
   @@map("pets")
 }
@@ -186,4 +202,22 @@ model ReproductiveEvent {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("reproductive_events")
+}
+
+model AiConsult {
+  id          String       @id @default(uuid())
+  petId       String
+  userId      String
+  type        ConsultType
+  photoUrl    String
+  userNote    String?
+  aiAnalysis  String
+  urgency     UrgencyLevel?
+  woundSeries String?
+  createdAt   DateTime     @default(now())
+
+  pet  Pet  @relation(fields: [petId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ai_consults")
 }
