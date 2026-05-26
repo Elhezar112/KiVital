@@ -31,17 +31,17 @@ export default function NavBar({ userEmail }: { userEmail: string }) {
 
   return (
     <header className="bg-white border-b border-gray-200">
-      <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
 
         {/* 左侧：Logo + 桌面导航 */}
         <div className="flex items-center gap-6">
           <span className="text-lg font-bold text-emerald-600">KiVital</span>
-          <nav className="hidden sm:flex items-center gap-1">
+          <nav className="hidden sm:flex items-center gap-0.5">
             {links.map(link => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                className={`px-2.5 py-1.5 rounded-lg text-sm font-medium transition whitespace-nowrap ${
                   pathname === link.href
                     ? 'bg-emerald-50 text-emerald-700'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -58,9 +58,9 @@ export default function NavBar({ userEmail }: { userEmail: string }) {
           <LanguageSwitcher />
           <button
             onClick={handleSignOut}
-            className="hidden sm:block text-xs text-gray-400 hover:text-gray-600 transition"
+            className="hidden sm:block text-xs text-gray-400 hover:text-gray-600 transition whitespace-nowrap"
           >
-            {userEmail} · {tAuth('signOut')}
+            {tAuth('signOut')}
           </button>
           {/* 汉堡按钮（仅移动端） */}
           <button
